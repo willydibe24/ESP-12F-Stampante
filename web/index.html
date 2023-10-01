@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stampante cameretta</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
+    </style>
+    <style>
+        * {
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        body {
+            background: rgb(39, 39, 39);
+            color: white;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 90%;
+            max-width: 600px;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: #11111183;
+        }
+
+        .card-header {
+            text-align: center;
+            padding: .5rem;
+        }
+
+        .card-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .card-content-btn {
+            width: 100%;
+            display: grid;
+            place-items: center;
+        }
+
+        #btn-printer {
+            width: 100%;
+            max-width: 200px;
+            padding: 1rem;
+            font-size: 2rem;
+            border: none;
+            border-radius: 1rem;
+            color: #fff;
+            background: rgb(225, 199, 6);
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        #btn-printer:hover {
+            filter: brightness(93%);
+        }
+
+        .status-bar {
+            width: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .status-bar-field {
+            font-weight: bold;
+            color: red;
+        }
+
+        .buttons-status-bar {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: .3rem;
+            margin-top: 10px;
+        }
+
+        #reset-values {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 2rem;
+            background: #fff;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        #reset-values img {
+            width: 15px;
+            height: 15px;
+        }
+
+        #reset-values:hover {
+            background: #e2e1e1;
+        }
+
+        #set-trigger-value-arrow {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            max-width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            transition: .3s;
+        }
+        
+        #set-trigger-value-arrow img { 
+            width: 15px;
+            height: 15px;
+        }
+
+        #set-trigger-value-arrow:hover {
+            background: #e2e1e1;
+        }
+
+        .set-trigger-value-container {
+            opacity: 0;
+            visibility: hidden;
+            width: 100%;
+            max-height: 0;
+            align-self: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            transition: .3s ease-in-out;
+        }
+
+        .set-trigger-value-container.active {
+            opacity: 1;
+            visibility: visible;
+            max-height: 200px;
+        }
+
+        .set-trigger-value-input-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        #set-trigger-value-input {
+            outline: none;
+            border: none;
+            background: #fff;
+            width: 60px;
+            padding: .4rem;
+            border-radius: 1rem;
+        }
+
+        #btn-set-trigger-value {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 28px;
+            border: none;
+            border-radius: 1rem;
+            background: #06ba33;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        #btn-set-trigger-value:hover {
+            background: #05a82e;
+        }
+
+        #btn-set-trigger-value img {
+            width: 15px;
+            height: 15px;
+        }
+
+        #version {
+            font-size: .8rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class = "card">
+        <div class="card-header">
+            <h1>Stampante cameretta</h1>
+        </div>
+        <div class="card-content">
+            <div class="card-content-btn">
+                <button
+                    id = "btn-printer"
+                    onclick = setTrigger();
+                >Offline</button>
+            </div>
+            <div class="status-bar">
+                <div class="microcontroller-connected-container">
+                    <span>Stato microcontrollore: <span id = "microcontroller-connected-status" class = "status-bar-field">Offline</span></span>
+                </div>
+                <div class="ip-container">
+                    <span>IP microcontrollore: <span id = "microcontroller-ip" class = "status-bar-field">n/d</span></span>
+                </div>
+                <div class="counter-container">
+                    <span>Interazioni stampante: <span id = "microcontroller-counter-value" class = "status-bar-field">n/d</span></span>
+                </div>
+                <div class="trigger-value-container">
+                    <span>Angolo pressione: <span id = "microcontroller-trigger-value" class = "status-bar-field">n/d</span></span>
+                </div>
+                <div class="buttons-status-bar">
+                    <button
+                        id = "reset-values"
+                        onclick = resetValues()
+                    ><img src = "arrows-rotate-solid.svg" alt = "ripristina">
+                    </button>
+                    <button
+                        id = "set-trigger-value-arrow"
+                        onclick = handleValueContainer()
+                    ><img src = "caret-down-solid.svg" alt = "">
+                    </button>
+                </div>
+                <div class="set-trigger-value-container">
+                    <div class="set-trigger-value-input-container">
+                        <span>Imposta nuovo angolo</span>
+                        <input 
+                            type = "number"
+                            id = "set-trigger-value-input"
+                            min = "1" 
+                            max = "179" 
+                        >
+                    </div>
+                    <button
+                        id = "btn-set-trigger-value"
+                        onclick = setTriggerValue()
+                    ><img src = "check-solid.svg" alt = "invio"></button>
+                </div>
+            </div>
+            <span id = "version">v1.2</span>
+        </div>
+    </div>
+    <script>
+        
+        const fetchWaitUntil = 3000; 
+        const fetchAfter = 1500; 
+
+        const btnPrinter = document.querySelector("#btn-printer");
+        const connectedStatus = document.querySelector("#microcontroller-connected-status");
+        const ipAddress = document.querySelector("#microcontroller-ip");
+        const counterValue = document.querySelector("#microcontroller-counter-value");
+        const triggerValue = document.querySelector("#microcontroller-trigger-value");
+
+        const controller = new AbortController();
+
+
+
+        const handleFetchError = (err) => {
+            console.log(err);
+
+            btnPrinter.innerText = "Offline";
+            btnPrinter.style.background = "rgb(232, 205, 6)";
+
+            connectedStatus.innerText = "Offline";
+            connectedStatus.style.color = "red";
+
+            ipAddress.innerText = "n/d";
+            ipAddress.style.color = "red";
+
+            counterValue.innerText = "n/d";
+            counterValue.style.color = "red";
+        };
+
+
+
+        const fetchAndHandle = async (url) => {
+            const fetchController = new AbortController();
+            const timeoutController = new AbortController();
+
+            const timeout = setTimeout(() => timeoutController.abort(), fetchWaitUntil);
+
+            try {
+                const res = await Promise.race([fetch(url, { signal: fetchController.signal }), new Promise((_, rej) => timeoutController.signal.addEventListener('abort', () => rej(new Error("Request timed out"))))]);
+
+                clearTimeout(timeout);
+
+                if (res.ok) {
+                    return res;
+                } else {
+                    throw new Error(`Errore ${res.status}.`);
+                }
+            } catch (err) {
+                handleFetchError(err);
+            }
+        };
+
+
+
+        const checkIfAlive = async () => {
+            const data = await fetchAndHandle("http://192.168.178.79/", controller.signal);
+            
+            if (data) {
+                connectedStatus.innerText = "Connesso";
+                connectedStatus.style.color = "#06ba33";
+            }
+        };
+
+
+
+        const setTrigger = async () => {
+            try {
+                const res = await fetch("http://192.168.178.79/trigger", { method: "POST" });
+                if(!res.ok) 
+                    throw new Error(`Errore ${res.status}.`);
+            } catch(err) {
+                console.log(err);
+            }
+        }
+
+
+
+        const getInfo = async () => {
+            const res = await fetchAndHandle("http://192.168.178.79/info", controller.signal);
+            const data = await res.json();
+
+            if (data) {
+                
+                btnPrinter.style.background = data.printerStatus ? "#cc0c0c" : "#06ba33";
+                btnPrinter.innerText = data.printerStatus ? "Spegni" : "Accendi";
+
+                ipAddress.innerText = data.ip;
+                ipAddress.style.color = "#fff";
+
+                counterValue.innerText = data.counter;
+                counterValue.style.color = "#fff";
+                
+                triggerValue.innerText = `${data.servoTriggerValue}°`;
+                triggerValue.style.color = "#fff";
+            }
+        };
+
+
+
+        const resetValues = async () => {
+            try {
+                const res = await fetch("http://192.168.178.79/reset-values", { method: "POST" });
+                if(!res.ok) 
+                    throw new Error(`Errore ${res.status}.`);
+            } catch(err) {
+                console.log(err);
+            }
+        }
+
+
+
+        const setTriggerValue = async () => {
+            let value = document.querySelector("#set-trigger-value-input").value;
+
+            try {
+                const res = await fetch(`http://192.168.178.79/set-trigger-value?value=${value}`, { method: "POST" });
+                if(!res.ok) 
+                    throw new Error(`Errore ${res.status}.`);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+
+
+        setInterval(() => {
+            controller.abort();
+            checkIfAlive();
+            getInfo();
+        }, fetchAfter);
+
+        checkIfAlive();
+        getInfo();
+
+
+        
+        let sectionStatus = false;
+
+        const handleValueContainer = () => {
+            const section = document.querySelector(".set-trigger-value-container");
+            const arrow = document.querySelector("#set-trigger-value-arrow");
+            sectionStatus ? section.classList.remove("active") : section.classList.add("active");
+            sectionStatus ? arrow.style.transform = "rotate(0deg)" : arrow.style.transform = "rotate(180deg)";    
+
+            sectionStatus = !sectionStatus;
+        }
+
+    </script>
+</body>
+</html>
