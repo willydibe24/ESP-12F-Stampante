@@ -293,15 +293,23 @@
             const timeout = setTimeout(() => timeoutController.abort(), fetchWaitUntil);
 
             try {
-                const res = await Promise.race([fetch(url, { signal: fetchController.signal }), new Promise((_, rej) => timeoutController.signal.addEventListener('abort', () => rej(new Error("Request timed out"))))]);
+                const res = await Promise.race([
+                    fetch(url, { signal: fetchController.signal }), 
+                    new Promise((_, rej) => {
+                        timeoutController.signal.addEventListener('abort', () => {
+                            rej(new Error("Request timed out"))
+                        });
+                    }),
+                ]);
 
                 clearTimeout(timeout);
 
                 if (res.ok) {
                     return res;
-                } else {
-                    throw new Error(`Errore ${res.status}.`);
-                }
+                } 
+
+                throw new Error(`Errore ${res.status}.`);
+            
             } catch (err) {
                 handleFetchError(err);
             }
@@ -310,7 +318,7 @@
 
 
         const checkIfAlive = async () => {
-            const data = await fetchAndHandle("http://192.168.178.79/", controller.signal);
+            const data = await fetchAndHandle("http://192.168.178.79/");
             
             if (data) {
                 connectedStatus.innerText = "Connesso";
