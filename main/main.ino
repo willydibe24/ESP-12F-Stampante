@@ -11,8 +11,7 @@ unsigned long servoPrevTime = 0;
 bool servoTrigger = false;          // when /trigger route is called, the variable switches to true for 500ms
 int servoValue = 90;                // default value is set to 90 deg
 
-// unsigned long printerStandByAfterMs = 300000;
-unsigned long printerStandByAfterMs = 10000;
+unsigned long printerStandByAfterMs = 150000;
 unsigned long prevPrinterInteractionTime = 0;
 
 ESP8266WebServer server(80);
