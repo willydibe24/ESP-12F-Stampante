@@ -35,7 +35,7 @@ void loop()
 
     if (servoManager.getActive())
     {
-        if (millis() - servoManager.getInteractionStartTime() >= 1200)
+        if (millis() - servoManager.getInteractionStartTime() >= 1100)
         {
             if (servoManager.getValue() == 90)
             {

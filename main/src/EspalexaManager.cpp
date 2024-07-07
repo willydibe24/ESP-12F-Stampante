@@ -4,7 +4,7 @@ Espalexa EspalexaManager::m_espalexa;
 
 void EspalexaManager::init()
 {
-    m_espalexa.addDevice("ESP Stampante Cameretta", callbackServo);
+    m_espalexa.addDevice("Stampante Cameretta", callbackServo);
     Serial.print("Dispositivo individuabile dall'app Alexa come: ");
     Serial.println(m_espalexa.getDevice(0)->getName());
     m_espalexa.begin();
