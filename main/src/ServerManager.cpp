@@ -1,7 +1,7 @@
 #include "../include/ServerManager.hpp"
 
 
-ESP8266WebServer ServerManager::m_server(80);
+ESP8266WebServer ServerManager::m_server(8080);
 
 
 void ServerManager::init()

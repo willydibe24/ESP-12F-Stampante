@@ -73,11 +73,11 @@ void PrefsManager::incrementCounter()
 
 void PrefsManager::toggleIsPrinterOn()
 {
-    if (isPrinterOn() && millis() - m_lastInteractionTime > m_printerStandByAfterMs)
+    if (isPrinterOn() && millis() - m_lastInteractionTime > m_printerStandByAfterMs)    // Click the printer button to get her out of stand-by
     {
         m_lastInteractionTime = millis();
         return;
     }
     m_lastInteractionTime = millis();
-    toggleIsPrinterOn();
+    m_prefs.putBool("printerOn", !isPrinterOn());
 }

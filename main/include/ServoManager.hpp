@@ -20,7 +20,7 @@ public:
     int getValue();
 
     void setActive(bool active);
-    void setPrevTime(unsigned long time);
+    void setInteractionStartTime(unsigned long time);
     void setValue(int value);
     void write();
     int read();

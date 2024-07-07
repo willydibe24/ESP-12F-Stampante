@@ -4,6 +4,7 @@
 #include "include/PrefsManager.hpp"
 #include "include/ServoManager.hpp"
 #include "include/OtaManager.hpp"
+#include "include/EspalexaManager.hpp"
 
 
 void setup()
@@ -19,14 +20,18 @@ void setup()
     OtaManager::init();
 
     ServoManager::getInstance().init();    
+
+    EspalexaManager::init();
 }
 
 
 void loop()
 {
+    ServoManager& servoManager = ServoManager::getInstance();
+    
     ArduinoOTA.handle();
     ServerManager::handleClient();
-    ServoManager& servoManager = ServoManager::getInstance();
+    EspalexaManager::loop();
 
     if (servoManager.getActive())
     {
@@ -45,7 +50,7 @@ void loop()
                 servoManager.setActive(false);
             }
             servoManager.write();
-            servoManager.setPrevTime(millis());
+            servoManager.setInteractionStartTime(millis());
         }
     }
 }

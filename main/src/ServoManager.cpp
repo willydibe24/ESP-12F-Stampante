@@ -45,7 +45,7 @@ void ServoManager::setActive(bool active)
 }
 
 
-void ServoManager::setPrevTime(unsigned long time)
+void ServoManager::setInteractionStartTime(unsigned long time)
 {
     m_interactionStartTime = time;
 }

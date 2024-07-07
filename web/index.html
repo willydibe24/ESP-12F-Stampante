@@ -318,7 +318,7 @@
 
 
         const checkIfAlive = async () => {
-            const data = await fetchAndHandle("http://192.168.178.79/");
+            const data = await fetchAndHandle("http://192.168.178.79:8080/");
             
             if (data) {
                 connectedStatus.innerText = "Connesso";
@@ -330,7 +330,7 @@
 
         const setTrigger = async () => {
             try {
-                const res = await fetch("http://192.168.178.79/trigger", { method: "POST" });
+                const res = await fetch("http://192.168.178.79:8080/trigger", { method: "POST" });
                 if(!res.ok) 
                     throw new Error(`Errore ${res.status}.`);
             } catch(err) {
@@ -341,7 +341,7 @@
 
 
         const getInfo = async () => {
-            const res = await fetchAndHandle("http://192.168.178.79/info", controller.signal);
+            const res = await fetchAndHandle("http://192.168.178.79:8080/info", controller.signal);
             const data = await res.json();
 
             if (data) {
@@ -364,7 +364,7 @@
 
         const resetValues = async () => {
             try {
-                const res = await fetch("http://192.168.178.79/reset-values", { method: "POST" });
+                const res = await fetch("http://192.168.178.79:8080/reset-values", { method: "POST" });
                 if(!res.ok) 
                     throw new Error(`Errore ${res.status}.`);
             } catch(err) {
@@ -378,7 +378,7 @@
             let value = document.querySelector("#set-trigger-value-input").value;
 
             try {
-                const res = await fetch(`http://192.168.178.79/set-trigger-value?value=${value}`, { method: "POST" });
+                const res = await fetch(`http://192.168.178.79:8080/set-trigger-value?value=${value}`, { method: "POST" });
                 if(!res.ok) 
                     throw new Error(`Errore ${res.status}.`);
             } catch (err) {

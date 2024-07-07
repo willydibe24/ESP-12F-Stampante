@@ -16,6 +16,7 @@ WiFiManager::~WiFiManager()
 void WiFiManager::connect() 
 {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    WiFi.mode(WIFI_STA);
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(1000);
